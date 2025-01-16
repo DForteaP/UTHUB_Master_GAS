@@ -4,16 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "UTHUB_GASCharacter.generated.h"
 
+class UUTHUB_ASC;
+
 UCLASS(Blueprintable)
-class AUTHUB_GASCharacter : public ACharacter
+class AUTHUB_GASCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	AUTHUB_GASCharacter();
 
+	UUTHUB_ASC* ASC;
+	
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -21,6 +26,12 @@ public:
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	FORCEINLINE virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
+protected:
+
+	virtual void BeginPlay() override;
 
 private:
 	/** Top down camera */

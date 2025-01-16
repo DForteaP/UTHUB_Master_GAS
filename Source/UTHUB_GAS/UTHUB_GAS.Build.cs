@@ -9,5 +9,10 @@ public class UTHUB_GAS : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput" });
-    }
+        
+        PrivateDependencyModuleNames.Add("GameplayAbilities");
+        PrivateDependencyModuleNames.Add("GameplayTasks");
+        
+        PublicIncludePaths.Add(ModuleDirectory + "/Public");
+	}
 }

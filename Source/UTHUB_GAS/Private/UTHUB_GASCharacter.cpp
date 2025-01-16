@@ -10,9 +10,13 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "UTHUB_ASC.h"
 
 AUTHUB_GASCharacter::AUTHUB_GASCharacter()
 {
+
+	ASC = CreateDefaultSubobject<UUTHUB_ASC>(TEXT("ASC"));
+	
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -49,3 +53,14 @@ void AUTHUB_GASCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 }
+
+UAbilitySystemComponent* AUTHUB_GASCharacter::GetAbilitySystemComponent() const
+{
+	return ASC;
+}
+
+void AUTHUB_GASCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
