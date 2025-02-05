@@ -6,7 +6,7 @@
 #include "Pokemon.generated.h"
 
 USTRUCT(BlueprintType)
-struct FTypeEffectiveness : public FTableRowBase
+struct FPokemonTypesEffects : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -14,7 +14,7 @@ struct FTypeEffectiveness : public FTableRowBase
 	FGameplayTag TypeTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Modifier; 
+	TMap<FGameplayTag, float> Modifier; 
 };
 
 UCLASS()
