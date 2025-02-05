@@ -3,7 +3,6 @@
 #include "UTHUB_GASCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
-#include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -62,5 +61,29 @@ UAbilitySystemComponent* AUTHUB_GASCharacter::GetAbilitySystemComponent() const
 void AUTHUB_GASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(CharacterData)
+	{
+		TArray<FCharacterAttrib*> OutData;
+		CharacterData->GetAllRows(TEXT(""), OutData);
+
+		if(!OutData.IsEmpty())
+		{
+			FCharacterAttrib** Attr = OutData.FindByPredicate([this](FCharacterAttrib* Row)
+			{
+				return Row->ClassTag.MatchesTag(CharacterClassTag);
+			});
+			
+			if (Attr)
+			{
+				CharacterAttributes = *Attr;
+			}
+			
+		}
+	}
+}
+
+void AUTHUB_GASCharacter::Attack()
+{
 }
 

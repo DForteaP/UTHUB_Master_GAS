@@ -10,8 +10,10 @@ public class UTHUB_GAS : ModuleRules
 
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "AIModule", "Niagara", "EnhancedInput" });
         
-        PrivateDependencyModuleNames.Add("GameplayAbilities");
-        PrivateDependencyModuleNames.Add("GameplayTasks");
+        PrivateDependencyModuleNames.AddRange(new string[]
+        {
+	        "GameplayAbilities", "GameplayTasks", "GameplayTags"
+        });
         
         PublicIncludePaths.Add(ModuleDirectory + "/Public");
 	}
