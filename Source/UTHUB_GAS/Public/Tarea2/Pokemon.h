@@ -5,8 +5,20 @@
 #include "GameFramework/Character.h"
 #include "Pokemon.generated.h"
 
+class UPokeAttack;
+
+UENUM(BlueprintType)
+enum class EPokemonAttack : uint8
+{
+	Placaje      UMETA(DisplayName = "Placaje"),
+	LatigoCepa	 UMETA(DisplayName = "LatigoCepa"),
+	Burbuja		 UMETA(DisplayName = "Burbuja"),
+	Ascuas		 UMETA(DisplayName = "Ascuas"),
+	Impactrueno  UMETA(DisplayName = "Impactrueno")
+};
+
 USTRUCT(BlueprintType)
-struct FPokemonTypesEffects : public FTableRowBase
+struct FPokemonTypesTable : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -22,29 +34,47 @@ class UTHUB_GAS_API APokemon : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
-	int32 PP = 4;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
-	UDataTable* AttackData;
+	UDataTable* TableTypes;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
+	UDataTable* AttackTable;
+	
 	void InitializeAttacksData();
 
 public:
 	APokemon();
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pokemon, meta=(AllowPrivateAccess = true ))
-	TMap<UPokeAttack*, int32> AttacksSelected;	
-
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Pokemon)
 	APokemon* PokemonTarget;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
-	TArray<UPokeAttack*> AttackList;
+	TArray<EPokemonAttack> AttackList;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
+	TArray<UPokeAttack*> AttacksInstanciated;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
+	FText Name;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
 	TArray<FGameplayTag> Type;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
+	int PSMax;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
+	int CurrentPS;
+	
+	UFUNCTION(BlueprintCallable)
+	TArray<FGameplayTag> GetTypes();
+	
+	UFUNCTION(BlueprintCallable)
+	void ApplyDamage(APokemon* Attacker, UPokeAttack* DataAttack);
+
+	UFUNCTION(BlueprintCallable)
+	float CalculateModifier(UPokeAttack* DataAttack);
+	
 	UFUNCTION(BlueprintCallable)
 	virtual bool TryDoAttack(UPokeAttack* AttackExecute);
 	

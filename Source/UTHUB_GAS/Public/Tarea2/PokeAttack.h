@@ -5,8 +5,8 @@
 #include "UObject/Object.h"
 #include "PokeAttack.generated.h"
 
-class UPokeAttack;
 class APokemon;
+enum class EPokemonAttack : uint8;
 
 USTRUCT()
 struct FAttackAttributes : public FTableRowBase
@@ -27,7 +27,14 @@ UCLASS(BlueprintType, Blueprintable)
 class UTHUB_GAS_API UPokeAttack : public UObject
 {
 	GENERATED_BODY()
+	
+	FAttackAttributes* AttackData;
 
+public:
+
+	UPROPERTY(BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
+	FText Name;
+	
 	UPROPERTY(BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
 	FGameplayTag Type;
 
@@ -36,12 +43,31 @@ class UTHUB_GAS_API UPokeAttack : public UObject
 	
 	UPROPERTY(BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
 	int32 AttackPP;
+
+	UPROPERTY(BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
+	int32 CurrentPP;
 	
-	FAttackAttributes* AttackData;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EPokemonAttack AttackID;
+	
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentPP();
 
-public:
+	UFUNCTION(BlueprintCallable)
+	void DiscountPP();
 
-	virtual void Init(const FAttackAttributes& AttackAttributes);
-
-	virtual void Attack(APokemon* Owner, APokemon* Target);
+	UFUNCTION(BlueprintCallable)
+	FGameplayTag GetAttackType();
+	
+	UFUNCTION(BlueprintCallable)
+	int GetAttackPower();
+	
+	UFUNCTION(BlueprintCallable)
+	FText GetAttackName();
+	
+	virtual void Init(FAttackAttributes* AtrribAttack);
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void Attack(APokemon* Attacker, APokemon* Target);
 };
