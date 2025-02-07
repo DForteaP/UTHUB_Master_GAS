@@ -45,6 +45,18 @@ class UTHUB_GAS_API APokemon : public ACharacter
 public:
 	APokemon();
 	
+	UFUNCTION(CallInEditor, BlueprintCallable, Category="Pokemon|Combat")
+	void Attack1();
+	
+	UFUNCTION(CallInEditor, BlueprintCallable, Category="Pokemon|Combat")
+	void Attack2();
+	
+	UFUNCTION(CallInEditor, BlueprintCallable, Category="Pokemon|Combat")
+	void Attack3();
+	
+	UFUNCTION(CallInEditor, BlueprintCallable, Category="Pokemon|Combat")
+	void Attack4();
+	
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Pokemon)
 	APokemon* PokemonTarget;
 	
@@ -55,7 +67,7 @@ public:
 	TArray<UPokeAttack*> AttacksInstanciated;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
-	FText Name;
+	FText PokemonName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pokemon)
 	TArray<FGameplayTag> Type;

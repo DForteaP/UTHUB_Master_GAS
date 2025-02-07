@@ -6,6 +6,38 @@ APokemon::APokemon()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+void APokemon::Attack1()
+{
+	if (AttacksInstanciated.Num() != 0)
+	{
+		TryDoAttack(AttacksInstanciated[0]);
+	}
+}
+
+void APokemon::Attack2()
+{
+	if (AttacksInstanciated.Num() > 0)
+	{
+		TryDoAttack(AttacksInstanciated[1]);
+	}
+}
+
+void APokemon::Attack3()
+{
+	if (AttacksInstanciated.Num() > 1)
+	{
+		TryDoAttack(AttacksInstanciated[2]);
+	}
+}
+
+void APokemon::Attack4()
+{
+	if (AttacksInstanciated.Num() > 2)
+	{
+		TryDoAttack(AttacksInstanciated[3]);
+	}
+}
+
 void APokemon::BeginPlay()
 {
 	Super::BeginPlay();
@@ -56,14 +88,9 @@ void APokemon::ApplyDamage(APokemon* Attacker, UPokeAttack* DataAttack)
 	float Modifier = CalculateModifier(DataAttack);
 	CurrentPS = CurrentPS - (DataAttack->GetAttackPower() * Modifier);
 	
-	FString AttackerName = Attacker->GetName();  
-	FString AttackerType = "";//Attacker->Type.ToString();
-	FString TargetName = this->GetName();
-	FString TargetType = "";//this->Type.ToString();
 	FString AttackType = DataAttack->Type.ToString(); 
-	
-	UE_LOG(LogTemp, Log, TEXT("El Pokémon %s (Tipo: %s) lanza un ataque de tipo %s contra %s (Tipo: %s) con un multiplicador de daño de: %.2f"),
-		*AttackerName, *AttackerType, *AttackType, *TargetName, *TargetType, Modifier);
+	UE_LOG(LogTemp, Log, TEXT("POKEMON: El Pokémon %s lanza %s, un ataque de tipo %s contra %s con un multiplicador de daño de: %.2f"),
+		*Attacker->PokemonName.ToString(), *DataAttack->Name.ToString(), *AttackType, *this->PokemonName.ToString(), Modifier);
 }
 
 float APokemon::CalculateModifier(UPokeAttack* DataAttack)
@@ -73,25 +100,28 @@ float APokemon::CalculateModifier(UPokeAttack* DataAttack)
 	static const FString ContextString(TEXT("TypeEffectivenessTable"));
 	FGameplayTag AttackType = DataAttack->GetAttackType();
 	FGameplayTag TargetType1 = Type[0];
-	//FGameplayTag TargetType2 = Type[1];
-	
 	TArray<FName> RowNames = TableTypes->GetRowNames();
 	for (const FName& RowName : RowNames)
 	{
 		FPokemonTypesTable* Row = TableTypes->FindRow<FPokemonTypesTable>(RowName, ContextString);
 		if (!Row) continue;
-		if (const float* Modifier = Row->Modifier.Find(TargetType1))
+		if (AttackType.MatchesTag(Row->TypeTag))
 		{
-			return *Modifier;
+			if (const float* Modifier = Row->Modifier.Find(TargetType1))
+			{
+				UE_LOG(LogTemp, Log, TEXT("POKEMON: Modificador encontrado: %.2f"), *Modifier);
+				return *Modifier;
+			}
 		}
 	}
-
+	
 	return 1.0f;
 }
 
 
 bool APokemon::TryDoAttack(UPokeAttack* AttackExecute)
 {
+	
 	for (UPokeAttack* Attack : AttacksInstanciated)
 	{
 		if (Attack->GetName() == AttackExecute->GetName())

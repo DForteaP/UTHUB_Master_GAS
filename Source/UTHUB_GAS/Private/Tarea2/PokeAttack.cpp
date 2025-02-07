@@ -5,6 +5,12 @@ struct FPokemonTypesEffects;
 
 void UPokeAttack::Init(FAttackAttributes* AtrribAttack)
 {
+	AttackData = AtrribAttack;
+	Name = AtrribAttack->Name;
+	Type = AtrribAttack->Type;
+	AttackDamage = AtrribAttack->Power;
+	AttackPP = AtrribAttack->PP_Max;
+	CurrentPP = AtrribAttack->PP_Max;
 	UE_LOG(LogTemp, Log, TEXT("El ataque es: %s"), *AtrribAttack->Name.ToString());
 }
 

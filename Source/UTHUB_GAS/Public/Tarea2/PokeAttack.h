@@ -47,7 +47,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = Pokemon, meta=(AllowPrivateAccess = true ))
 	int32 CurrentPP;
 	
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EPokemonAttack AttackID;
 	
