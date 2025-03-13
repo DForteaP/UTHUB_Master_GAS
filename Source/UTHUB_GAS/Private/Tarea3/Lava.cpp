@@ -1,4 +1,4 @@
-﻿#include "Tarea3/LavaPool.h"
+﻿#include "Tarea3/Lava.h"
 
 #include "UTHUB_ASC.h"
 #include "Tarea3/Components/GameplayAttributeEffector.h"

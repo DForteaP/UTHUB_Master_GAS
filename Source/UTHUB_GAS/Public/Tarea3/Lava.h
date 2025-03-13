@@ -4,7 +4,7 @@
 #include "AbilitySystemInterface.h"
 #include "UTHUB_ASC.h"
 #include "GameFramework/Actor.h"
-#include "LavaPool.generated.h"
+#include "Lava.generated.h"
 
 class UCoreAttributeSet;
 
