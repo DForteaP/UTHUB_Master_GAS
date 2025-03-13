@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
+#include "UTHUB_ASC.h"
+#include "Tarea3/CoreAttributeSet.h"
+#include "Tarea3/GameplayBaseStateTags.h"
 #include "UTHUB_GASCharacter.generated.h"
 
 class UAttackBase;
@@ -22,13 +25,12 @@ struct FCharacterAttrib : public FTableRowBase
 	UPROPERTY(EditAnywhere)	TSubclassOf<UAttackBase> PrimaryAttack;
 };
 
-class UUTHUB_ASC;
-
 UCLASS(Blueprintable)
-class AUTHUB_GASCharacter : public ACharacter, public IAbilitySystemInterface
+class AUTHUB_GASCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagCustomInterface
 {
 	GENERATED_BODY()
-	
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
 	FGameplayTag CharacterClassTag;
 	
@@ -36,11 +38,15 @@ class AUTHUB_GASCharacter : public ACharacter, public IAbilitySystemInterface
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
 	UDataTable* CharacterData;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = true ))
+	TSubclassOf<UGameplayEffect> SampleEffect;
+	
+	UPROPERTY()
+	UCoreAttributeSet* CoreAttributeSet;
+	
 public:
 	AUTHUB_GASCharacter();
-
-	UUTHUB_ASC* ASC;
 	
 	virtual void Tick(float DeltaSeconds) override;
 	
@@ -57,12 +63,32 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Character Attributes")
 	float GetSpeed() const { return CharacterAttributes ? CharacterAttributes->Speed : 0.0f; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag ActiveEventTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer GameplayStates;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UGameplayBaseStateTags* CharacterStates;
+
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+	
+	virtual void AddTags(const FGameplayTag& InTag) override;
+	virtual void RemoveTags(FGameplayTag& InTag) override;
+
+	UFUNCTION(CallInEditor)
+	void ApplyGameplayEffects();
+	
 protected:
 
 	virtual void BeginPlay() override;
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void Attack();
+	
+	virtual void Jump() override;
+	virtual void PostInitializeComponents() override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -70,5 +96,15 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
+	class UUTHUB_ASC* ASC;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Gameplay, meta = (AllowPrivateAccess = "true"))
+	class UGASDataComponent* GASDataComponent;
+	
+	void InitializeCharacter();
+
+	void SetupAttributeCallbacks();
 };
 
