@@ -4,4 +4,3 @@ UGASDataComponent::UGASDataComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
-

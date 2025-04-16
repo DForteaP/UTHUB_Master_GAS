@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UTHUB_GASPlayerController.h"
+
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraSystem.h"
@@ -8,9 +9,10 @@
 #include "UTHUB_GASCharacter.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
-#include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
+#include "Tarea3/InputAbilityMapping.h"
+#include "Tarea3/Components/GASDataComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -122,4 +124,37 @@ void AUTHUB_GASPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+
+void AUTHUB_GASPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
+	UUTHUB_ASC* ASC = GetPawn()->FindComponentByClass<UUTHUB_ASC>();
+	
+	if(EnhancedInputComponent && ASC)
+	{
+		if(const UGASDataComponent* DataComponent = GetPawn()->FindComponentByClass<UGASDataComponent>())
+		{
+			for(auto [InputAction, AbilityClass] : DataComponent->InputAbilityMapping->Mapping)
+			{
+				ASC->AddAbilityFromClass(AbilityClass);
+				EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Started, this, &ThisClass::ExecuteAbility);
+			}
+		}
+	}	
+}
+
+void AUTHUB_GASPlayerController::ExecuteAbility(const FInputActionInstance& InputActionInstance)
+{
+	UGASDataComponent* GASDataComponent = GetPawn()->FindComponentByClass<UGASDataComponent>();
+	UUTHUB_ASC* ASC = GetPawn()->FindComponentByClass<UUTHUB_ASC>();
+	
+	if(GASDataComponent && GASDataComponent->InputAbilityMapping && ASC){
+	
+		const UInputAction* ActionInput = InputActionInstance.GetSourceAction();
+		ASC->TryActivateAbilityByClass(GASDataComponent->InputAbilityMapping->Mapping[ActionInput]);			
+	}
 }

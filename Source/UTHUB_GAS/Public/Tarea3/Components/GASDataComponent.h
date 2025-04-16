@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "AttributeSet.h"
+#include "Tarea3/InputAbilityMapping.h"
 #include "GASDataComponent.generated.h"
 
 
@@ -25,4 +26,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Data", meta=(AllowPrivateAccess = true ))
 	TMap<FGameplayAttribute, TSubclassOf<UGameplayAttributeEffector>> AttributeEffectors;
+	
+	UPROPERTY(EditAnywhere, Category="Data", meta=(AllowPrivateAccess = true ))
+	TSubclassOf<UGameplayAbility> DefaultAbility;
+
+	UPROPERTY(EditAnywhere, Category="Data", meta=(AllowPrivateAccess = true ))
+	UInputAbilityMapping* InputAbilityMapping;
 };
